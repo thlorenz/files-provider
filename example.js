@@ -1,11 +1,11 @@
 'use strict'
 
 const opener = require('opener')
-const { OPEN, PROMPT_AND_OPEN, createFilesProvider } = require('./')
+const { HANDLE, PROMPT_AND_HANDLE, createFilesProvider } = require('./')
 
 const provideFiles = createFilesProvider({
-    single       : OPEN
-  , multi        : PROMPT_AND_OPEN
+    single       : HANDLE
+  , multi        : PROMPT_AND_HANDLE
   , promptHeader : 'Example Tool - please select a file to open: '
   , regex        : /\.js$/
   , handler      : ({ entry, fullPath }) => {

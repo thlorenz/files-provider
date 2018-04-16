@@ -4,11 +4,11 @@ Provides apps with file(s) identified via a regex.
 
 ```js
 const opener = require('opener')
-const { OPEN, PROMPT_AND_OPEN, createFilesProvider } = require('files-provider')
+const { HANDLE, PROMPT_AND_HANDLE, createFilesProvider } = require('files-provider')
 
 const provideFiles = createFilesProvider({
-    single       : OPEN
-  , multi        : PROMPT_AND_OPEN
+    single       : HANDLE
+  , multi        : PROMPT_AND_HANDLE
   , promptHeader : 'Example Tool - please select a file to open: '
   , regex        : /\.js$/
   , handler      : ({ entry, fullPath }) => {
