@@ -1,6 +1,6 @@
 {
   "name": "files-provider",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Provides apps with file(s) identified via a regex.",
   "main": "files-provider.js",
   "repository": {
