@@ -101,7 +101,7 @@ class FilesProvider {
    */
   async fromDirectory(root = process.cwd()) {
     const files = await resolveFromDirectory(root, this._regex)
-    await this._processFiles(files)
+    return await this._processFiles(files)
   }
 
   async _processFiles(files) {
@@ -121,7 +121,7 @@ class FilesProvider {
       const { choice, selectableFiles } = await this._promptForFile(files)
       if (this._multi === PROMPT) {
         if (choice === ALL_KEY) return files
-        return selectableFiles.get(choice)
+        return [ selectableFiles.get(choice) ]
       } else {
         if (choice === ALL_KEY) {
           for (const file of files) this._handler(file)
