@@ -11,8 +11,12 @@ const access = promisify(fs.access)
 const assert = require('assert')
 
 async function canRead(p) {
-  const err = await access(p, fs.constants.R_OK)
-  return err == null
+  try {
+    await access(p, fs.constants.R_OK)
+    return true
+  } catch (err) {
+    return false
+  }
 }
 
 async function resolveFromDirectory(root, regex) {
