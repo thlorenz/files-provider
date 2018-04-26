@@ -1,5 +1,7 @@
 # files-provider
 
+<a href="https://www.patreon.com/bePatron?u=8663953"><img alt="become a patron" src="https://c5.patreon.com/external/logo/become_a_patron_button.png" height="35px"></a>
+
 Provides apps with file(s) identified via a regex.
 
 ```js
@@ -54,6 +56,7 @@ Creates a FilesProvider
     -   `$0.regex` **[RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)?= null** the regex to match the files with
     -   `$0.single` **[Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** strategy for handling a single file `HANDLE|RETURN` (optional, default `PROMPT`)
     -   `$0.multi` **[Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** strategy for handling multiple files `HANDLE|PROMPT|RETURN|PROMPT_AND_HANDLE` (optional, default `PROMPT_AND_HANDLE`)
+    -   `$0.choiceAll` **[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** if `true` a choice to select all files is included when multiple files are found (optional, default `true`)
     -   `$0.handler` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?= null** function to call when `HANDLE|PROMPT_AND_HANDLE` strategies are selected
     -   `$0.promptHeader` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?= defaultPromptHeader** header when prompting user to select a file
     -   `$0.promptFooter` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)?= defaultPromptFooter** footer when prompting user to select a file

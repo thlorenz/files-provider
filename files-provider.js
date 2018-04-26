@@ -39,12 +39,12 @@ const ALL_KEY = '0'
 const defaultPromptHeader = 'Please select a file below:'
 const defaultPromptFooter = 'Your choice: '
 
-function makeSelectable(files) {
+function makeSelectable(files, choiceAll) {
   const map = new Map()
   for (var i = 0; i < files.length; i++) {
     map.set(`${i + 1}`, files[i])
   }
-  map.set(ALL_KEY, ALL)
+  if (choiceAll) map.set(ALL_KEY, ALL)
   return map
 }
 
@@ -75,6 +75,7 @@ class FilesProvider {
       regex
     , single
     , multi
+    , choiceAll
     , handler
     , promptHeader
     , promptFooter
@@ -90,6 +91,7 @@ class FilesProvider {
     this._regex = regex
     this._single = single
     this._multi = multi
+    this._choiceAll = choiceAll
     this._handler = handler
     this._promptHeader = promptHeader
     this._promptFooter = promptFooter
@@ -140,7 +142,7 @@ class FilesProvider {
   }
 
   async _promptForFile(files) {
-    const selectableFiles = makeSelectable(files)
+    const selectableFiles = makeSelectable(files, this._choiceAll)
     const promptMsg = createPromptMsg(
       selectableFiles, this._promptHeader, this._promptFooter
     )
@@ -159,6 +161,7 @@ class FilesProvider {
  * @param {RegExp} $0.regex the regex to match the files with
  * @param {Number} [$0.single = PROMPT] strategy for handling a single file `HANDLE|RETURN`
  * @param {Number} [$0.multi = PROMPT_AND_HANDLE] strategy for handling multiple files `HANDLE|PROMPT|RETURN|PROMPT_AND_HANDLE`
+ * @param {Boolean} [$0.choiceAll = true] if `true` a choice to select all files is included when multiple files are found
  * @param {function} $0.handler function to call when `HANDLE|PROMPT_AND_HANDLE` strategies are selected
  * @param {String} $0.promptHeader header when prompting user to select a file
  * @param {String} $0.promptFooter footer when prompting user to select a file
@@ -169,6 +172,7 @@ function createFilesProvider({
       regex = null
     , single = HANDLE
     , multi = PROMPT_AND_HANDLE
+    , choiceAll = true
     , handler = null
     , promptHeader = defaultPromptHeader
     , promptFooter = defaultPromptFooter
@@ -177,6 +181,7 @@ function createFilesProvider({
       regex
     , single
     , multi
+    , choiceAll
     , handler
     , promptHeader
     , promptFooter
