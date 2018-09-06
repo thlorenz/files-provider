@@ -19,6 +19,14 @@ async function canRead(p) {
   }
 }
 
+function maxFileTime(fsStat) {
+  // Returns the latest timestamp of a file, selecting between atime,
+  // mtime, and ctime.
+  const {atime, mtime, ctime} = fsStat;
+  const a = atime >= mtime ? atime : mtime;
+  return a >= ctime ? a : ctime;
+}
+
 async function resolveFromDirectory(root, regex) {
   const allEntries = await readdir(root)
   const files = []
@@ -27,8 +35,10 @@ async function resolveFromDirectory(root, regex) {
 
     const fullPath = path.join(root, entry)
     if (!(await canRead(fullPath))) continue
-    if (!(await stat(fullPath)).isFile()) continue
-    files.push({ fullPath, entry })
+    const entryStat = await stat(fullPath)
+    if (!(entryStat.isFile())) continue
+    const timestamp = maxFileTime(entryStat);
+    files.push({ fullPath, entry, timestamp })
   }
 
   return files
@@ -59,8 +69,8 @@ function createValidator(map) {
 
 function createPromptMsg(map, promptHeader, promptFooter) {
   let msg = `${promptHeader}\n\n`
-  for (const [ selector, { entry } ] of map) {
-    msg += `\t${selector}:  ${entry}\n`
+  for (const [ selector, { entry, timestamp } ] of map) {
+    msg += `\t${selector}:  ${entry}\t\t${timestamp}\n`
   }
   return `${msg}\n\n${promptFooter}`
 }
