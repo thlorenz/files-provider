@@ -22,7 +22,7 @@ async function canRead(p) {
 function maxFileTime(fsStat) {
   // Returns the latest timestamp of a file, selecting between atime,
   // mtime, and ctime.
-  const {atime, mtime, ctime} = fsStat;
+  const { atime, mtime, ctime } = fsStat;
   const a = atime >= mtime ? atime : mtime;
   return a >= ctime ? a : ctime;
 }
@@ -37,7 +37,7 @@ async function resolveFromDirectory(root, regex) {
     if (!(await canRead(fullPath))) continue
     const entryStat = await stat(fullPath)
     if (!(entryStat.isFile())) continue
-    const timestamp = maxFileTime(entryStat);
+    const timestamp = maxFileTime(entryStat).toString().substr(0, 24);
     files.push({ fullPath, entry, timestamp })
   }
 
@@ -69,8 +69,16 @@ function createValidator(map) {
 
 function createPromptMsg(map, promptHeader, promptFooter) {
   let msg = `${promptHeader}\n\n`
+  let longestEntryLength = -1;
+  let longestSelectorLength = -1;
   for (const [ selector, { entry, timestamp } ] of map) {
-    msg += `\t${selector}:  ${entry}\t\t${timestamp}\n`
+    longestSelectorLength = longestSelectorLength > selector.length ? longestSelectorLength : selector.length;
+    longestEntryLength = longestEntryLength > entry.length ? longestEntryLength : entry.length;
+  }
+  for (const [ selector, { entry, timestamp } ] of map) {
+    const s = selector.padStart(longestSelectorLength);
+    const e = entry.padEnd(longestEntryLength);
+    msg += `\t${s}:  ${e}   ${timestamp}\n`
   }
   return `${msg}\n\n${promptFooter}`
 }
