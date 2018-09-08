@@ -2,6 +2,7 @@
 
 const { prompt } = require('promptly')
 const { promisify } = require('util')
+const table = require('text-table')
 const path = require('path')
 const fs = require('fs')
 const readdir = promisify(fs.readdir)
@@ -69,17 +70,11 @@ function createValidator(map) {
 
 function createPromptMsg(map, promptHeader, promptFooter) {
   let msg = `${promptHeader}\n\n`
-  let longestEntryLength = -1;
-  let longestSelectorLength = -1;
+  const lines = []
   for (const [ selector, { entry, timestamp } ] of map) {
-    longestSelectorLength = longestSelectorLength > selector.length ? longestSelectorLength : selector.length;
-    longestEntryLength = longestEntryLength > entry.length ? longestEntryLength : entry.length;
+    lines.push([`\t${selector}:`, entry, ` ${timestamp}`])
   }
-  for (const [ selector, { entry, timestamp } ] of map) {
-    const s = selector.padStart(longestSelectorLength);
-    const e = entry.padEnd(longestEntryLength);
-    msg += `\t${s}:  ${e}   ${timestamp}\n`
-  }
+  msg += table(lines, { align: [':', 'l', 'l'] })
   return `${msg}\n\n${promptFooter}`
 }
 
