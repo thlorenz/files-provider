@@ -9,7 +9,8 @@
   },
   "homepage": "https://github.com/thlorenz/files-provider",
   "dependencies": {
-    "promptly": "~3.0.3"
+    "promptly": "~3.0.3",
+    "text-table": "^0.2.0"
   },
   "keywords": [],
   "author": {

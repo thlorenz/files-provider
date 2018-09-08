@@ -2,6 +2,7 @@
 
 const { prompt } = require('promptly')
 const { promisify } = require('util')
+const table = require('text-table')
 const path = require('path')
 const fs = require('fs')
 const readdir = promisify(fs.readdir)
@@ -19,6 +20,14 @@ async function canRead(p) {
   }
 }
 
+function maxFileTime(fsStat) {
+  // Returns the latest timestamp of a file, selecting between atime,
+  // mtime, and ctime.
+  const { atime, mtime, ctime } = fsStat;
+  const a = atime >= mtime ? atime : mtime;
+  return a >= ctime ? a : ctime;
+}
+
 async function resolveFromDirectory(root, regex) {
   const allEntries = await readdir(root)
   const files = []
@@ -27,8 +36,10 @@ async function resolveFromDirectory(root, regex) {
 
     const fullPath = path.join(root, entry)
     if (!(await canRead(fullPath))) continue
-    if (!(await stat(fullPath)).isFile()) continue
-    files.push({ fullPath, entry })
+    const entryStat = await stat(fullPath)
+    if (!(entryStat.isFile())) continue
+    const timestamp = maxFileTime(entryStat).toString().substr(0, 24);
+    files.push({ fullPath, entry, timestamp })
   }
 
   return files
@@ -59,9 +70,11 @@ function createValidator(map) {
 
 function createPromptMsg(map, promptHeader, promptFooter) {
   let msg = `${promptHeader}\n\n`
-  for (const [ selector, { entry } ] of map) {
-    msg += `\t${selector}:  ${entry}\n`
+  const lines = []
+  for (const [ selector, { entry, timestamp } ] of map) {
+    lines.push([`\t${selector}:`, entry, ` ${timestamp}`])
   }
+  msg += table(lines, { align: [':', 'l', 'l'] })
   return `${msg}\n\n${promptFooter}`
 }
 
